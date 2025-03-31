@@ -1,6 +1,9 @@
+C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\api_call_log.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\appsettings.json
+C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\weather_data.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\LoftViewer.exe
+C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\weathersettings.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\images\tempImage.jpg
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\LoftViewer.deps.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\LoftViewer.runtimeconfig.json
@@ -36,6 +39,7 @@ C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.A
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.csproj.CoreCompileInputs.cache
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.sourcelink.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\staticwebassets\msbuild.LoftViewer.Microsoft.AspNetCore.StaticWebAssets.props
@@ -50,4 +54,3 @@ C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\refint\LoftV
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.pdb
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\LoftViewer.genruntimeconfig.cache
 C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\obj\Debug\net8.0\ref\LoftViewer.dll
-C:\Users\STICH\RiderProjects\LoftViewer\LoftViewer\bin\Debug\net8.0\app_jwt_token.json

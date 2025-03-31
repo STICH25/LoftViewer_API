@@ -41,4 +41,10 @@
       <_ContentIncludedByDefault Remove="SupportFiles\app_jwt_token.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="weathersettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

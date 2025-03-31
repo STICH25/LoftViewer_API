@@ -12,6 +12,7 @@ builder.Services.AddSingleton<DbServices>();
 
 // JwtAuthenticationService
 builder.Services.AddScoped<IJwtAuthenticationService, JwtAuthenticationService>();
+builder.Services.AddSingleton<IWeather, WeatherService>();
 
 // Configure authentication using JwtAuthenticationService
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
