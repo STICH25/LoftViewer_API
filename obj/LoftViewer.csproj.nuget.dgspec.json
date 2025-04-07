@@ -1,31 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\STICH\\RiderProjects\\LoftViewer\\LoftViewer\\LoftViewer.csproj": {}
+    "C:\\Users\\jaylo\\RiderProjects\\LoftViewer_API\\LoftViewer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\STICH\\RiderProjects\\LoftViewer\\LoftViewer\\LoftViewer.csproj": {
+    "C:\\Users\\jaylo\\RiderProjects\\LoftViewer_API\\LoftViewer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\STICH\\RiderProjects\\LoftViewer\\LoftViewer\\LoftViewer.csproj",
+        "projectUniqueName": "C:\\Users\\jaylo\\RiderProjects\\LoftViewer_API\\LoftViewer.csproj",
         "projectName": "LoftViewer",
-        "projectPath": "C:\\Users\\STICH\\RiderProjects\\LoftViewer\\LoftViewer\\LoftViewer.csproj",
-        "packagesPath": "C:\\Users\\STICH\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\STICH\\RiderProjects\\LoftViewer\\LoftViewer\\obj\\",
+        "projectPath": "C:\\Users\\jaylo\\RiderProjects\\LoftViewer_API\\LoftViewer.csproj",
+        "packagesPath": "C:\\Users\\jaylo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jaylo\\RiderProjects\\LoftViewer_API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\STICH\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\jaylo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -105,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
