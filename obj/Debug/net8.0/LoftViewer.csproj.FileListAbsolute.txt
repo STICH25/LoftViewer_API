@@ -110,4 +110,6 @@ C:\Users\jaylo\RiderProjects\LoftViewer_API\obj\Debug\net8.0\LoftViewer.genrunti
 C:\Users\jaylo\RiderProjects\LoftViewer_API\obj\Debug\net8.0\ref\LoftViewer.dll
 C:\Users\jaylo\RiderProjects\LoftViewer_API\bin\Debug\net8.0\api_call_log.json
 C:\Users\jaylo\RiderProjects\LoftViewer_API\bin\Debug\net8.0\weather_data.json
-C:\Users\jaylo\RiderProjects\LoftViewer_API\bin\Debug\net8.0\app_jwt_token.json
+C:\Users\jaylo\RiderProjects\LoftViewer_API\bin\Debug\net8.0\LoftViewer.staticwebassets.endpoints.json
+C:\Users\jaylo\RiderProjects\LoftViewer_API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\jaylo\RiderProjects\LoftViewer_API\obj\Debug\net8.0\staticwebassets\msbuild.LoftViewer.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
