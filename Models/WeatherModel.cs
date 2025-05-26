@@ -16,4 +16,8 @@ public class WeatherModel
      public string? Temperature { get; set; }
      public string? Description { get; set; }
      public DateTime Timestamp { get; set; }
+     
+     public int Humidity { get; set; }
+     
+     public string? IconUrl { get; set; }
 }

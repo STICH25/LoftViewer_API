@@ -1,0 +1,47 @@
+# .NET
+.vs/
+.vscode/
+.idea/
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+[Dd]eploy/
+[Dd]eployment/
+bin/
+obj/
+
+# Microsoft specific files
+app.publish/
+publish/
+
+# ASP.NET specific files
+*.dbmdl
+*.bak
+
+# IIS Express
+_IISExpress/
+iisexpress/
+
+# User-specific files
+*.swp
+
+# Node.js modules (if you're using any front-end tools)
+node_modules/
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+*.log

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection.Metadata;
 using System.Text.Json;
 using LoftViewer.interfaces;
 using LoftViewer.Models;
@@ -78,14 +79,41 @@ public class WeatherService : IWeather
 
             using var jsonDoc = JsonDocument.Parse(response);
             var root = jsonDoc.RootElement;
+            
+            // rounded values
+            //temperature
+            var _temp = root.GetProperty("current").GetProperty("temp").GetDouble();
+            var roundedTemp = Math.Round(_temp);
+            // wind speed
+            var _Speed = root.GetProperty("current").GetProperty("wind_speed").GetDouble();
+            var roundedSpeed = Math.Round(_Speed);
+            
+            
+            // icons
+            var mainWeather = root.GetProperty("current").GetProperty("weather")[0].GetProperty("main").GetString();
+            
+            var iconUrl = mainWeather switch
+            {
+                "Clear" => "/images/weathericons/sun.gif",
+                "Rain" => "/images/weathericons/rain.gif",
+                "Clouds" => "/images/weathericons/cloudy.gif",
+                "Thunderstorm" => "/images/weathericons/storm.gif",
+                "Drizzle" => "/images/weathericons/drizzle.gif",
+                "Mist" or "Fog" or "Haze" => "/images/weathericons/foggy.gif",
+                _ => "/images/weathericons/default.gif"
+            };
 
             var weatherData = new WeatherModel()
             {
+                
+                
                 City = city,
-                Temperature = root.GetProperty("current").GetProperty("temp").ToString(),
+                Temperature = roundedTemp.ToString(),
                 Description = root.GetProperty("current").GetProperty("weather")[0].GetProperty("description").GetString(),
                 WindDirection = _convertWinDirection.ConvertWindDirection(root.GetProperty("current").GetProperty("wind_deg").GetInt32()),
-                WindSpeed = root.GetProperty("current").GetProperty("wind_speed").ToString(),
+                WindSpeed = roundedSpeed.ToString(),
+                Humidity = root.GetProperty("current").GetProperty("humidity").GetInt32(),
+                IconUrl = iconUrl,
                 Timestamp = DateTime.UtcNow
             };
 
