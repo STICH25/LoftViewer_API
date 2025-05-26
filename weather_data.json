@@ -1,0 +1,11 @@
+{
+  "CurrentTemperature": null,
+  "WindDirection": "SW",
+  "WindSpeed": "17",
+  "City": "Tampa",
+  "Temperature": "81",
+  "Description": "overcast clouds",
+  "Timestamp": "2025-04-07T17:47:26.4066333Z",
+  "Humidity": 76,
+  "IconUrl": "/images/weathericons/cloudy.gif"
+}
