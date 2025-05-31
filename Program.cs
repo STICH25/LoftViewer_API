@@ -107,6 +107,8 @@ else
     if (!builder.Environment.IsEnvironment("Railway"))
     {
         app.UseHttpsRedirection();
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
 }
 
