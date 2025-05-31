@@ -77,7 +77,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173",
+            "http://localhost:5001",
             "https://api.reyfamilyloft.com",
             "https://reyfamilyloft.com",
             "https://app.reyfamilyloft.com"
@@ -89,7 +89,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -107,8 +107,11 @@ if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    //This line is important for Railway
+    serverOptions.ListenAnyIP(8080); 
+});
 
 // Middleware pipeline configuration
 app.UseCors("AllowAllOrigins");
