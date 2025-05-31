@@ -107,12 +107,6 @@ if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    //This line is important for Railway
-    serverOptions.ListenAnyIP(8080); 
-});
-
 // Middleware pipeline configuration
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
