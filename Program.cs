@@ -77,13 +77,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5001",
+            "https://www.reyfamilyloft.com",
             "https://api.reyfamilyloft.com",
-            "https://reyfamilyloft.com",
-            "https://app.reyfamilyloft.com"
+            "https://app.reyfamilyloft.com",
+            "http://localhost:5173"
         )
         .AllowAnyMethod()
-        .AllowAnyHeader();
+        .AllowAnyHeader()
+        .AllowCredentials();
     });
 });
 
