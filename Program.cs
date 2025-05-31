@@ -2,6 +2,7 @@ using LoftViewer.Models;
 using LoftViewer.Services;
 using LoftViewer.interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +19,11 @@ builder.Services.AddScoped<IWeather, WeatherService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // Retrieve IJwtAuthenticationService via Dependency Injection
         using var serviceProvider = builder.Services.BuildServiceProvider();
         var jwtAuthService = serviceProvider.GetRequiredService<IJwtAuthenticationService>();
 
         options.TokenValidationParameters = jwtAuthService.GetTokenValidationParameters();
 
-        // Optional: Add debugging for token validation
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
@@ -42,7 +41,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// controllers and Swagger
+// Controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -75,13 +74,17 @@ builder.Services.AddSwaggerGen(c =>
 // CORS for React frontend
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReact",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        });
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.WithOrigins(
+            "http://localhost:5173",
+            "https://api.reyfamilyloft.com",
+            "https://reyfamilyloft.com",
+            "https://app.reyfamilyloft.com"
+        )
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
 });
 
 var app = builder.Build();
@@ -92,9 +95,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Support X-Forwarded-Proto from Railway
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+// Use HTTPS Redirection only in Development (locally)
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
+
 // Middleware pipeline configuration
-app.UseCors("AllowReact");
-app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
