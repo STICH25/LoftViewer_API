@@ -2,7 +2,6 @@ using LoftViewer.Models;
 using LoftViewer.Services;
 using LoftViewer.interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,7 @@ builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDBSettings"));
 builder.Services.AddSingleton<DbServices>();
 
-// JwtAuthenticationService
+// JWT Auth services
 builder.Services.AddScoped<IJwtAuthenticationService, JwtAuthenticationService>();
 builder.Services.AddScoped<IWeather, WeatherService>();
 
@@ -41,7 +40,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Controllers and Swagger
+// Add Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -71,45 +70,50 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// CORS for React frontend
+// ✅ CORS Policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-            "https://www.reyfamilyloft.com",
-            "https://api.reyfamilyloft.com",
-            "https://app.reyfamilyloft.com",
-            "http://localhost:5173"
-        )
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
+        policy
+            .WithOrigins(
+                "https://www.reyfamilyloft.com",
+                "https://app.reyfamilyloft.com",
+                "https://api.reyfamilyloft.com",
+                "http://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
+});
+
+// ✅ Listen on PORT for Railway
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(8080); // Railway exposes this port
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+// Swagger in development
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-// Support X-Forwarded-Proto from Railway
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+else
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
-
-// Use HTTPS Redirection only in Development (locally)
-if (app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
+    // ✅ Only redirect HTTP to HTTPS outside of Railway
+    // Do NOT use HTTPS redirection on Railway
+    if (!builder.Environment.IsEnvironment("Railway"))
+    {
+        app.UseHttpsRedirection();
+    }
 }
 
-// Middleware pipeline configuration
-app.UseCors("AllowAllOrigins");
+// ✅ Middleware pipeline
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
