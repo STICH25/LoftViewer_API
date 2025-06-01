@@ -77,7 +77,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "https://api.reyfamilyloft.com",
+                "https://www.reyfamilyloft.com",
                 "http://localhost:5173"
             )
             .AllowAnyHeader()
