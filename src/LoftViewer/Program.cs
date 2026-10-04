@@ -2,13 +2,9 @@ using LoftViewer.Configuration;
 using LoftViewer.Data;
 using LoftViewer.Extensions;
 
+// The listening port comes from configuration, never code: the container defaults to 8080
+// (ASPNETCORE_HTTP_PORTS in the Dockerfile) and Railway's domain targets that port.
 var builder = WebApplication.CreateBuilder(args);
-
-// Railway (and most PaaS hosts) assign the listening port through PORT.
-if (Environment.GetEnvironmentVariable("PORT") is { Length: > 0 } port)
-{
-    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-}
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services

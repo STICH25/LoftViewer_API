@@ -38,4 +38,5 @@ Railway builds the root `Dockerfile`. Set these service variables:
 | `WeatherSettings__ApiKey` | optional |
 | `Swagger__Enabled` | `true` to expose `/swagger` in production |
 
-The container listens on `PORT` when Railway sets it, otherwise 8080.
+The container listens on port 8080 (`ASPNETCORE_HTTP_PORTS` in the `Dockerfile`; Railway's
+`ASPNETCORE_URLS=http://+:8080` says the same). Railway's public domain must target 8080.
