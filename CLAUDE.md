@@ -73,6 +73,9 @@ missing JWT secret falls back to a random per-process key, so tokens die on ever
   `RoleClaimType = "role"` make `[Authorize(Roles = "Admin")]` work. The front end may decode `name`/`role`.
 - **Middleware order** in `Program.cs`: forwarded headers → exception handler → CORS → rate limiter →
   authentication → authorization. Railway terminates TLS, so there is no HTTPS redirection in the app.
+- **The container listens on 8080 and the production domain targets 8080.** Do not bind to Railway's
+  `PORT` variable in code: if it differs from the domain's target port, the live API goes dark.
+  Railway also sets `ASPNETCORE_URLS=http://+:8080`.
 - **Weather quota.** OpenWeatherMap's free tier is 1,000 calls/day and each lookup is 2 calls.
   `WeatherCallBudget` enforces `MaxCallsPerDay`; the refresh runs in `WeatherRefreshService`
   (a `BackgroundService`), never from a request.
