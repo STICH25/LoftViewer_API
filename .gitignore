@@ -1,0 +1,25 @@
+# Build output
+bin/
+obj/
+publish/
+TestResults/
+
+# IDE / user files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.swp
+
+# Secrets and runtime state. Configuration secrets belong in user-secrets or environment variables.
+appsettings.*.local.json
+weathersettings.json
+app_jwt_token.json
+weather_data.json
+api_call_log.json
+.env
+
+# Logs
+*.log

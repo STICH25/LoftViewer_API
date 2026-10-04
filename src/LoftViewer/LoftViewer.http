@@ -1,0 +1,24 @@
+# Requests for the REST Client in VS / VS Code / Rider. Run the "http" launch profile first.
+@host = http://localhost:5053
+
+### Health
+GET {{host}}/health
+
+### All birds
+GET {{host}}/api/birds
+
+### Log in (copy the token into @token below)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "your-user", "password": "your-password" }
+
+###
+@token = paste-token-here
+
+### Delete a bird (Admin)
+DELETE {{host}}/api/birds/000000000000000000000000
+Authorization: Bearer {{token}}
+
+### Latest cached weather
+GET {{host}}/api/weather/latest

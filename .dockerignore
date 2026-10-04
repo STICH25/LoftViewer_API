@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.idea/
+**/*.user
+**/secrets.json
+**/appsettings.*.local.json
+.git/
+.github/
+tests/
+weathersettings.json
+app_jwt_token.json
+*.md
