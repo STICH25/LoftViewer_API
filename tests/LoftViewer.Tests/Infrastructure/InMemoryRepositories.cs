@@ -86,6 +86,9 @@ public sealed class InMemoryUserRepository : IUserRepository
     public Task<AppUser?> FindByUserNameAsync(string userName, CancellationToken cancellationToken) =>
         Task.FromResult(Users.TryGetValue(userName, out var user) ? user : null);
 
+    public Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken) =>
+        Task.FromResult(Users.Values.FirstOrDefault(u => u.UserId == userId));
+
     public Task<bool> ExistsAsync(string userName, string email, CancellationToken cancellationToken) =>
         Task.FromResult(Users.Values.Any(u => u.UserName == userName || u.UserEmail == email));
 

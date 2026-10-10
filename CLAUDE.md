@@ -80,7 +80,7 @@ missing JWT secret falls back to a random per-process key, so tokens die on ever
   `WeatherCallBudget` enforces `MaxCallsPerDay`; the refresh runs in `WeatherRefreshService`
   (a `BackgroundService`), never from a request.
 
-## API surface (consumed by the front end)
+## API surface (consumed by the website and the mobile app)
 
 | Method | Route | Auth |
 |---|---|---|
@@ -88,12 +88,37 @@ missing JWT secret falls back to a random per-process key, so tokens die on ever
 | POST | `/api/birds/addBird` (multipart) | Admin |
 | POST | `/api/birds/upload-json` (multipart, JSON array) | Admin |
 | PUT / DELETE | `/api/birds/{id}` | Admin |
-| POST | `/api/auth/login` → `{ token, userName, role, expiresAt }` | anonymous, rate-limited |
+| POST | `/api/auth/login` → `{ token, userName, role, expiresAt }` (+ `refreshToken`, `refreshTokenExpiresAt` when `issueRefreshToken: true`) | anonymous, rate-limited |
+| POST | `/api/auth/refresh` `{ refreshToken }` → same shape, new tokens | anonymous, rate-limited |
+| POST | `/api/auth/logout` `{ refreshToken }` → 204 | anonymous, rate-limited |
 | POST | `/api/auth/register` | anonymous, rate-limited |
 | GET | `/api/weather?city=`, `/api/weather/latest` | anonymous |
 | GET | `/health` | anonymous |
 
 Errors are RFC 7807 ProblemDetails (`application/problem+json`).
+
+## Sessions: access tokens and refresh tokens
+
+- **Access token**: a JWT, 60 minutes (`JwtSettings:ExpirationMinutes`). The website stores only this.
+- **Refresh token**: opt-in, for native apps only (`issueRefreshToken: true` at login). 256 random bits,
+  valid 30 days from last use (`JwtSettings:RefreshTokenDays`), kept by the app in the OS secure store.
+- **Only the SHA-256 hash is stored** (`refreshTokens` collection). A database leak does not yield sessions.
+- **Rotation with reuse detection.** Every `/refresh` revokes the presented token and issues a new one.
+  Presenting an already-used token means it was copied or replayed, so *all* of that user's refresh
+  tokens are revoked (they sign in again). A client that loses the response to a refresh and retries
+  will trigger this once; that is intentional.
+- **The role is re-read at refresh**, so demoting or deleting a user takes effect within an hour.
+- The website never sends `issueRefreshToken`, so it never receives a refresh token (nothing
+  long-lived in `localStorage`).
+- Refresh and logout use a more generous limiter (`RateLimiting:RefreshPermitsPerMinute`, default 30)
+  than login (`AuthPermitsPerMinute`, 10). Limits are read per request from `IConfiguration`.
+- Indexes (unique hash, user id, TTL on `ExpiresAt`) are created by `MongoIndexInitializer` at startup;
+  failure is a logged warning, not a crash. The Atlas user needs the `createIndex` privilege.
+
+## Photos and caching
+
+`GET /api/birds/{id}/image` sends `Cache-Control: public, max-age=300` and a content-derived `ETag`,
+and answers `If-None-Match` with 304. A replaced photo gets a new ETag, so clients revalidate cheaply.
 
 ## Testing
 

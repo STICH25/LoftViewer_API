@@ -23,6 +23,13 @@ public sealed class JwtOptions
     [Range(1, 24 * 60)]
     public int ExpirationMinutes { get; set; } = 60;
 
+    /// <summary>
+    /// How long a native app stays signed in without being opened. Each refresh restarts the clock, so
+    /// anyone who uses the app at least this often never has to sign in again.
+    /// </summary>
+    [Range(1, 365)]
+    public int RefreshTokenDays { get; set; } = 30;
+
     public bool HasStrongSecret => Encoding.UTF8.GetByteCount(Secret) >= MinimumSecretBytes;
 
     public SymmetricSecurityKey CreateSigningKey() => new(Encoding.UTF8.GetBytes(Secret));

@@ -15,6 +15,7 @@ public sealed class LoftViewerApiFactory : WebApplicationFactory<Program>
 {
     public InMemoryBirdRepository Birds { get; } = new();
     public InMemoryUserRepository Users { get; } = new();
+    public InMemoryRefreshTokenRepository RefreshTokens { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -27,12 +28,20 @@ public sealed class LoftViewerApiFactory : WebApplicationFactory<Program>
             ["JwtSettings:Secret"] = "test-signing-key-that-is-long-enough-for-hmac-sha256",
             ["WeatherSettings:ApiKey"] = "",
             ["RateLimiting:AuthPermitsPerMinute"] = "10000",
+            ["RateLimiting:RefreshPermitsPerMinute"] = "10000",
         }));
 
         builder.ConfigureTestServices(services =>
         {
             services.AddSingleton<IBirdRepository>(Birds);
             services.AddSingleton<IUserRepository>(Users);
+            services.AddSingleton<IRefreshTokenRepository>(RefreshTokens);
+
+            // It would try to reach a MongoDB that does not exist in tests.
+            foreach (var descriptor in services.Where(d => d.ImplementationType == typeof(MongoIndexInitializer)).ToList())
+            {
+                services.Remove(descriptor);
+            }
         });
     }
 

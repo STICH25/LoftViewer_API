@@ -12,6 +12,9 @@ public sealed class UserRepository(IMongoDatabase database) : IUserRepository
     public async Task<AppUser?> FindByUserNameAsync(string userName, CancellationToken cancellationToken) =>
         await _users.Find(u => u.UserName == userName).FirstOrDefaultAsync(cancellationToken);
 
+    public async Task<AppUser?> FindByIdAsync(string userId, CancellationToken cancellationToken) =>
+        await _users.Find(u => u.UserId == userId).FirstOrDefaultAsync(cancellationToken);
+
     public Task<bool> ExistsAsync(string userName, string email, CancellationToken cancellationToken) =>
         _users.Find(u => u.UserName == userName || u.UserEmail == email).AnyAsync(cancellationToken);
 

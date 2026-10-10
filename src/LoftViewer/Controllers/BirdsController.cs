@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text.Json;
 using LoftViewer.Contracts;
 using LoftViewer.Data;
@@ -5,6 +6,7 @@ using LoftViewer.Models;
 using LoftViewer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using MongoDB.Bson;
 using SixLabors.ImageSharp;
 
@@ -41,17 +43,25 @@ public sealed partial class BirdsController(
         return bird is null ? NotFound() : BirdResponse.From(bird);
     }
 
-    /// <summary>The bird's photo, or a placeholder when it has none.</summary>
+    /// <summary>
+    /// The bird's photo, or a placeholder when it has none. Cacheable for five minutes and revalidated
+    /// by ETag afterwards, so lists of photos in the website and the mobile app are not downloaded again.
+    /// </summary>
     [HttpGet("{id}/image")]
     [Produces("image/jpeg")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status304NotModified)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImage(string id, CancellationToken cancellationToken)
     {
+        Response.Headers.CacheControl = "public, max-age=300";
+
         var bytes = IsObjectId(id) ? await birds.GetImageAsync(id, cancellationToken) : null;
         if (bytes is { Length: > 0 })
         {
-            return File(bytes, "image/jpeg");
+            // A strong validator derived from the content: a replaced photo gets a new ETag.
+            var etag = new EntityTagHeaderValue($"\"{Convert.ToHexString(SHA256.HashData(bytes))[..32]}\"");
+            return File(bytes, "image/jpeg", lastModified: null, entityTag: etag);
         }
 
         return System.IO.File.Exists(PlaceholderImagePath)
