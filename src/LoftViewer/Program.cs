@@ -12,7 +12,7 @@ builder.Services
     .AddJwtAuthentication(builder.Configuration, builder.Environment)
     .AddWeather(builder.Configuration)
     .AddFrontendCors(builder.Configuration)
-    .AddLoftViewerRateLimiting(builder.Configuration)
+    .AddLoftViewerRateLimiting()
     .AddProxySupport();
 
 builder.Services.AddControllers();

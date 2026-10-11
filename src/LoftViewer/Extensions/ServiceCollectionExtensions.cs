@@ -29,6 +29,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IBirdRepository, BirdRepository>();
         services.AddSingleton<IUserRepository, UserRepository>();
+        services.AddSingleton<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddHostedService<MongoIndexInitializer>();
         return services;
     }
 
@@ -66,6 +68,7 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization();
         services.AddSingleton<ITokenService, TokenService>();
         services.AddSingleton<IAccountService, AccountService>();
+        services.AddSingleton<IRefreshTokenService, RefreshTokenService>();
         return services;
     }
 

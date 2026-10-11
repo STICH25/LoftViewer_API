@@ -4,7 +4,6 @@ using System.Net.Http.Json;
 using LoftViewer.Contracts;
 using LoftViewer.Models;
 using LoftViewer.Tests.Infrastructure;
-using SixLabors.ImageSharp;
 
 namespace LoftViewer.Tests.Api;
 
@@ -49,6 +48,31 @@ public sealed class BirdsEndpointTests : IClassFixture<LoftViewerApiFactory>
     }
 
     [Fact]
+    public async Task GetImage_is_cacheable_and_a_repeat_request_with_the_etag_gets_304()
+    {
+        var bird = _factory.Birds.Add(new Bird
+        {
+            BirdName = Unique("Cached"),
+            BirdNumber = Unique("N"),
+            ImageBytes = TestImages.Png(40, 40),
+        });
+        var client = _factory.CreateClient();
+
+        var first = await client.GetAsync($"/api/birds/{bird.Id}/image", Ct);
+        var etag = first.Headers.ETag;
+
+        first.EnsureSuccessStatusCode();
+        Assert.NotNull(etag);
+        Assert.Contains("max-age=300", first.Headers.CacheControl?.ToString(), StringComparison.Ordinal);
+
+        using var conditional = new HttpRequestMessage(HttpMethod.Get, $"/api/birds/{bird.Id}/image");
+        conditional.Headers.IfNoneMatch.Add(etag);
+        var second = await client.SendAsync(conditional, Ct);
+
+        Assert.Equal(HttpStatusCode.NotModified, second.StatusCode);
+    }
+
+    [Fact]
     public async Task AddBird_without_token_returns_401()
     {
         var response = await _factory.CreateClient().PostAsync("/api/birds/addBird", BirdForm(Unique("A"), Unique("1")), Ct);
@@ -78,10 +102,10 @@ public sealed class BirdsEndpointTests : IClassFixture<LoftViewerApiFactory>
         Assert.Equal(name, stored.BirdName);
         Assert.Equal(Bird.NotAvailable, stored.BirdColor);
 
-        using var image = Image.Load(stored.ImageBytes!);
-        Assert.Equal("JPEG", image.Metadata.DecodedImageFormat?.Name);
-        Assert.Equal(1600, image.Width);
-        Assert.Equal(800, image.Height);
+        var (width, height, format) = TestImages.Inspect(stored.ImageBytes!);
+        Assert.Equal(SkiaSharp.SKEncodedImageFormat.Jpeg, format);
+        Assert.Equal(1600, width);
+        Assert.Equal(800, height);
     }
 
     [Fact]
