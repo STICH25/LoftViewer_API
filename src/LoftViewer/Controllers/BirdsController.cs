@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using MongoDB.Bson;
-using SixLabors.ImageSharp;
 
 namespace LoftViewer.Controllers;
 
@@ -245,7 +244,7 @@ public sealed partial class BirdsController(
             await using var stream = file.OpenReadStream();
             return (await ImageProcessor.NormalizeAsync(stream, cancellationToken), null);
         }
-        catch (Exception ex) when (ex is UnknownImageFormatException or InvalidImageContentException)
+        catch (UnsupportedImageException ex)
         {
             LogImageRejected(logger, ex, file.FileName);
             return (null, BadRequestProblem("The uploaded file is not a supported image."));

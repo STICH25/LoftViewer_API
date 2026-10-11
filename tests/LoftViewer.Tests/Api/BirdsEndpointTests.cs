@@ -4,7 +4,6 @@ using System.Net.Http.Json;
 using LoftViewer.Contracts;
 using LoftViewer.Models;
 using LoftViewer.Tests.Infrastructure;
-using SixLabors.ImageSharp;
 
 namespace LoftViewer.Tests.Api;
 
@@ -103,10 +102,10 @@ public sealed class BirdsEndpointTests : IClassFixture<LoftViewerApiFactory>
         Assert.Equal(name, stored.BirdName);
         Assert.Equal(Bird.NotAvailable, stored.BirdColor);
 
-        using var image = Image.Load(stored.ImageBytes!);
-        Assert.Equal("JPEG", image.Metadata.DecodedImageFormat?.Name);
-        Assert.Equal(1600, image.Width);
-        Assert.Equal(800, image.Height);
+        var (width, height, format) = TestImages.Inspect(stored.ImageBytes!);
+        Assert.Equal(SkiaSharp.SKEncodedImageFormat.Jpeg, format);
+        Assert.Equal(1600, width);
+        Assert.Equal(800, height);
     }
 
     [Fact]

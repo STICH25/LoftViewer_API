@@ -120,6 +120,24 @@ Errors are RFC 7807 ProblemDetails (`application/problem+json`).
 `GET /api/birds/{id}/image` sends `Cache-Control: public, max-age=300` and a content-derived `ETag`,
 and answers `If-None-Match` with 304. A replaced photo gets a new ETag, so clients revalidate cheaply.
 
+### Image processing (SkiaSharp)
+
+Uploads go through `Services/ImageProcessor`, built on **SkiaSharp** (MIT). It decodes only JPEG, PNG,
+WebP, GIF and BMP, applies the EXIF orientation, flattens transparency onto white, scales to at most
+1600px on the long edge and re-encodes as JPEG. Skia's encoder writes no metadata, so GPS data in phone
+photos never reaches the database. A file that is not one of those formats, is corrupt, or declares more
+than 120 megapixels raises `UnsupportedImageException` (the controller turns it into a 400).
+
+- **Do not switch back to SixLabors.ImageSharp.** Its releases up to 4.1.1 carry open high-severity
+  advisories (TIFF encoder/decoder, histogram), and 4.1.2+ needs a paid or applied-for license *key to
+  build in Release*, which would break the Docker deploy and CI.
+- `SkiaSharp.NativeAssets.Linux.NoDependencies` supplies the Linux library. It needs no system packages,
+  so the stock `aspnet` image works. If you add another native-asset package, check it loads in CI (Ubuntu).
+- JPEGs are decoded directly at reduced size where possible, so a 48-megapixel photo is never held at
+  full resolution. Skia rounds the requested scale to what the codec supports, sometimes *down*;
+  `ImageProcessor` steps it up until the result reaches 1600px (a test covers this).
+- Skia has no BMP or ICO *encoder*; the test fixtures for those are written by hand in `TestImages`.
+
 ## Testing
 
 `LoftViewerApiFactory` boots the real pipeline with in-memory repositories, so API tests need no
