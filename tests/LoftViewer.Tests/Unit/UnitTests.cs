@@ -57,6 +57,47 @@ public sealed class ImageProcessorTests
     }
 
     [Fact]
+    public async Task NormalizeAsync_rejects_TIFF_because_only_photo_formats_are_decoded()
+    {
+        using var tiff = new MemoryStream();
+        using (var source = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(32, 32))
+        {
+            await SixLabors.ImageSharp.ImageExtensions.SaveAsTiffAsync(source, tiff, TestContext.Current.CancellationToken);
+        }
+
+        tiff.Position = 0;
+
+        await Assert.ThrowsAsync<SixLabors.ImageSharp.UnknownImageFormatException>(
+            () => ImageProcessor.NormalizeAsync(tiff, TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("jpeg")]
+    [InlineData("png")]
+    [InlineData("webp")]
+    [InlineData("gif")]
+    [InlineData("bmp")]
+    public async Task NormalizeAsync_accepts_every_format_a_phone_or_camera_produces(string format)
+    {
+        using var source = new SixLabors.ImageSharp.Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(64, 48);
+        using var encoded = new MemoryStream();
+        var ct = TestContext.Current.CancellationToken;
+        switch (format)
+        {
+            case "jpeg": await SixLabors.ImageSharp.ImageExtensions.SaveAsJpegAsync(source, encoded, ct); break;
+            case "png": await SixLabors.ImageSharp.ImageExtensions.SaveAsPngAsync(source, encoded, ct); break;
+            case "webp": await SixLabors.ImageSharp.ImageExtensions.SaveAsWebpAsync(source, encoded, ct); break;
+            case "gif": await SixLabors.ImageSharp.ImageExtensions.SaveAsGifAsync(source, encoded, ct); break;
+            default: await SixLabors.ImageSharp.ImageExtensions.SaveAsBmpAsync(source, encoded, ct); break;
+        }
+
+        encoded.Position = 0;
+        using var result = Image.Load(await ImageProcessor.NormalizeAsync(encoded, ct));
+
+        Assert.Equal((64, 48), (result.Width, result.Height));
+    }
+
+    [Fact]
     public async Task NormalizeAsync_strips_exif_metadata()
     {
         using var input = new MemoryStream(TestImages.Png(200, 200, withExif: true));
